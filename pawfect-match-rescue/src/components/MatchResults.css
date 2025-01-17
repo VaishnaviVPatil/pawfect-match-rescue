@@ -1,0 +1,25 @@
+/* src/components/MatchResult.css */
+
+/* Initial state for match details */
+.match-details {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.5s, transform 0.5s ease-in-out;
+  }
+  
+  .match-details.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Style for the match card */
+  .match-card {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .match-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
