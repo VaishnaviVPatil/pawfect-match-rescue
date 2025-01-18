@@ -42,3 +42,5 @@ Follow these steps to set up and run the project locally:
    ```bash
    git clone https://github.com/your-username/pawfect-match-rescue.git
    cd pawfect-match-rescue
+   npm i
+   npm start
