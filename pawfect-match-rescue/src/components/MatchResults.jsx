@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Grid, Button, Typography } from '@mui/material';
+import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import DogCard from './DogCard';
+import ReactConfetti from 'react-confetti'; // Import react-confetti
 import './MatchResults.css'; // For CSS animation
 
 const MatchResults = () => {
@@ -10,10 +11,11 @@ const MatchResults = () => {
   const { favorites } = location.state || { favorites: [] };
   const [match, setMatch] = useState(null);
   const [isMatchVisible, setIsMatchVisible] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false); // State for confetti
 
   console.log(location.state);
 
-  // Find a match based on the favorites
   useEffect(() => {
     const findMatch = async () => {
       try {
@@ -38,31 +40,55 @@ const MatchResults = () => {
 
   const handleMatchClick = () => {
     setIsMatchVisible(true);
+    setShowConfetti(true); // Trigger confetti
+    setTimeout(() => {
+      setShowConfetti(false); // Stop confetti after 3 seconds
+    }, 6000);
   };
 
   const handleBackClick = () => {
     navigate('/'); // Navigate back to the search page
   };
 
+  const handleLogoutClick = () => {
+    setShowLogoutDialog(true); // Show the logout confirmation dialog
+    navigate('/');
+  };
+
+  const handleCancelLogout = () => {
+    setShowLogoutDialog(false); // Close the dialog without logging out
+  };
+
+  const handleConfirmLogout = async () => {
+    try {
+      await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+      navigate('/'); // Redirect to login page after logout
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <div style={{ padding: '20px' }}>
+      {showConfetti && <ReactConfetti />}
+
       <Typography variant="h4" gutterBottom style={{ color: '#6c63ff', fontWeight: 'bold', textAlign: 'center' }}>
         Your Pawfect Match Result
       </Typography>
 
-      {/* Display Favorite Dogs only if match is not revealed */}
+      {/* Display Favorite Dogs */}
       {!isMatchVisible && (
         <>
           <Typography variant="h6" gutterBottom style={{ textAlign: 'center' }}>
             Your Favorite Dogs:
           </Typography>
-          <Grid container spacing={4} justifyContent="center">
+          <Grid container style={{ textAlign: 'center' }} spacing={2}>
             {favorites.map((dog, index) => (
               <Grid item xs={12} sm={6} md={4} key={dog.id || index}>
                 <DogCard
-                  dog={dog} // Pass the full dog object to DogCard
-                  isFavorite={true} // Just to indicate that it's a favorite
-                  hideFavoriteButton={true} // Hide the favorite button
+                  dog={dog}
+                  isFavorite={true}
+                  hideFavoriteButton={true}
                 />
               </Grid>
             ))}
@@ -74,25 +100,22 @@ const MatchResults = () => {
       {match && (
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <Typography variant="h5" gutterBottom>
-            You are matched with:
+            Your Pawfect Match is:
           </Typography>
           {!isMatchVisible && (
-          <Button
-            onClick={handleMatchClick}
-            style={{
-              backgroundColor: '#6c63ff',
-              color: '#fff',
-              '&:hover': {
-                backgroundColor: '#5a54e0',
-              },
-              marginBottom: '20px',
-            }}
-            variant="contained"
-          >
-            Reveal Your Match
-          </Button>)}
+            <Button
+              onClick={handleMatchClick}
+              style={{
+                backgroundColor: '#6c63ff',
+                color: '#fff',
+                marginBottom: '20px',
+              }}
+              variant="contained"
+            >
+              Reveal Your Match
+            </Button>
+          )}
           <br />
-
           {isMatchVisible && (
             <div
               className={`match-details ${isMatchVisible ? 'show' : ''}`}
@@ -107,9 +130,14 @@ const MatchResults = () => {
               }}
             >
               <img src={match.img} alt={match.name} style={{ width: '100%', borderRadius: '8px' }} />
-              <Typography variant="body1" style={{ marginTop: '10px', fontWeight: 'bold' }}>
+              <Typography variant="h2" style={{ marginTop: '10px', fontWeight: 'bold' }}>
                 {match.name}
               </Typography>
+              <img
+                src="https://media.giphy.com/media/AmQYN58W99irb19ot8/giphy.gif?cid=790b7611lh7duxxv17mrbow73lijxodqb3tfq3m2m6gorvno&ep=v1_gifs_search&rid=giphy.gif&ct=g"
+                alt="Celebration"
+                style={{ width: '100%', marginTop: '20px' }}
+              />
             </div>
           )}
           <br />
@@ -124,14 +152,43 @@ const MatchResults = () => {
           style={{
             backgroundColor: '#ff4081',
             color: '#fff',
-            '&:hover': {
-              backgroundColor: '#e02b5e',
-            },
           }}
         >
           Back to Search
         </Button>
       </Grid>
+
+      {/* Logout Button */}
+      <Grid container justifyContent="center" style={{ marginTop: '20px' }}>
+        <Button
+          onClick={handleLogoutClick}
+          variant="contained"
+          style={{
+            backgroundColor: '#ff1744',
+            color: '#fff',
+          }}
+        >
+          Logout
+        </Button>
+      </Grid>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={showLogoutDialog} onClose={handleCancelLogout}>
+        <DialogTitle>Leaving so soon, hooman?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to log out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelLogout} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmLogout} color="secondary" autoFocus>
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

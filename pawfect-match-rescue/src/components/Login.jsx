@@ -7,7 +7,7 @@ const PaperStyled = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   width: '100%',
   maxWidth: 400,
-  backgroundColor: '#fff',
+  backgroundColor: 'whitesmoke',
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
   borderRadius: '8px',
   textAlign: 'center',
