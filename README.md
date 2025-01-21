@@ -23,7 +23,6 @@ Built with love for dog lovers by dog lovers, Pawfect Match is here to help ever
 - React.js (Frontend)
 - Material UI (Design Components)
 - Fetch API (for retrieving data)
-- Firebase (for storing dog data)
 
 ## Prerequisites
 
