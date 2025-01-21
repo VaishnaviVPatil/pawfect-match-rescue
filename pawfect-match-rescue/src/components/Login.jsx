@@ -47,7 +47,7 @@ const Login = ({ onLogin }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#eceaff',
       }}
     >
       <Grid container spacing={2}>

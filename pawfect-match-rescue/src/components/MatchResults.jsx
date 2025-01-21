@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 import DogCard from './DogCard';
 import ReactConfetti from 'react-confetti'; // Import react-confetti
 import './MatchResults.css'; // For CSS animation
@@ -13,8 +14,6 @@ const MatchResults = () => {
   const [isMatchVisible, setIsMatchVisible] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false); // State for confetti
-
-  console.log(location.state);
 
   useEffect(() => {
     const findMatch = async () => {
@@ -47,12 +46,11 @@ const MatchResults = () => {
   };
 
   const handleBackClick = () => {
-    navigate('/'); // Navigate back to the search page
+    navigate('/search'); // Navigate back to the search page
   };
 
   const handleLogoutClick = () => {
     setShowLogoutDialog(true); // Show the logout confirmation dialog
-    navigate('/');
   };
 
   const handleCancelLogout = () => {
@@ -69,9 +67,24 @@ const MatchResults = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ backgroundColor: '#ffe5e5', minHeight: '100vh', padding: '20px', position: 'relative' }}>
+      {/* Confetti */}
       {showConfetti && <ReactConfetti />}
 
+      {/* Logout Icon Button */}
+      <IconButton
+        onClick={handleLogoutClick}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          color: '#ff1744',
+        }}
+      >
+        <LogoutIcon fontSize="large" />
+      </IconButton>
+
+      {/* Title */}
       <Typography variant="h4" gutterBottom style={{ color: '#6c63ff', fontWeight: 'bold', textAlign: 'center' }}>
         Your Pawfect Match Result
       </Typography>
@@ -123,7 +136,8 @@ const MatchResults = () => {
                 backgroundColor: 'white',
                 padding: '20px',
                 borderRadius: '10px',
-                boxShadow: 'rgb(85, 91, 255) 0px 0px 0px 3px, rgb(31, 193, 27) 0px 0px 0px 6px, rgb(255, 217, 19) 0px 0px 0px 9px, rgb(255, 156, 85) 0px 0px 0px 12px, rgb(255, 85, 85) 0px 0px 0px 15px',
+                boxShadow:
+                  'rgb(85, 91, 255) 0px 0px 0px 3px, rgb(31, 193, 27) 0px 0px 0px 6px, rgb(255, 217, 19) 0px 0px 0px 9px, rgb(255, 156, 85) 0px 0px 0px 12px, rgb(255, 85, 85) 0px 0px 0px 15px',
                 textAlign: 'center',
                 maxWidth: '300px',
                 margin: '0 auto',
@@ -140,7 +154,7 @@ const MatchResults = () => {
               />
             </div>
           )}
-          <br />
+          <br /> 
         </div>
       )}
 
@@ -155,20 +169,6 @@ const MatchResults = () => {
           }}
         >
           Back to Search
-        </Button>
-      </Grid>
-
-      {/* Logout Button */}
-      <Grid container justifyContent="center" style={{ marginTop: '20px' }}>
-        <Button
-          onClick={handleLogoutClick}
-          variant="contained"
-          style={{
-            backgroundColor: '#ff1744',
-            color: '#fff',
-          }}
-        >
-          Logout
         </Button>
       </Grid>
 
